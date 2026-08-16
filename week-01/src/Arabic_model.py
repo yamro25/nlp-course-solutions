@@ -1,6 +1,6 @@
 import joblib
 import os
-from src.Preprocessing_pipeline import normalize_arabic
+from Preprocessing_pipeline import TextCleaner
 
 class ArabicSentimentModel:
     def __init__(self, model_path='Arabic_model_weights.pkl'):
@@ -10,6 +10,6 @@ class ArabicSentimentModel:
         self.model = joblib.load(model_path)
 
     def predict(self, text):
-        clean_text = normalize_arabic(text)
+        clean_text = TextCleaner.normalize_arabic(text)
         prediction = self.model.predict([clean_text])[0]
         return prediction
