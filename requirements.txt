@@ -4,3 +4,6 @@ joblib
 nltk
 jupyter
 ipykernel
+stanza
+langdetect
+gradio
