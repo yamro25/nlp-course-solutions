@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neurova AI - Tasks Report & Implementation</title>
+    <!-- MathJax for rendering LaTeX mathematical equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #475569;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #334155;
+            --border: #e2e8f0;
+            --code-bg: #0f172a;
+            --arabic-accent: #059669;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            color: var(--primary);
+            margin: 0 0 10px 0;
+        }
+
+        header p {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .task-card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-top: 24px;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        p, li {
+            color: var(--text-muted);
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        code {
+            font-family: "Fira Code", Consolas, Monaco, "Courier New", Courier, monospace;
+        }
+
+        .arabic-section {
+            direction: rtl;
+            text-align: right;
+            background-color: #f0fdf4;
+            border-right: 4px solid var(--arabic-accent);
+            border-left: none;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 30px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .arabic-section h3 {
+            color: var(--arabic-accent);
+            margin-top: 0;
+        }
+
+        .arabic-section ul {
+            padding-right: 20px;
+            padding-left: 0;
+        }
+
+        .arabic-section li {
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Neurova AI Solutions</h1>
+        <p>Comprehensive Research Reports & Technical Implementation</p>
+    </header>
+
+    <!-- TASK 0 -->
+    <section class="task-card">
+        <h2>Task 0: Initialization Methods in Neural Networks</h2>
+        
+        <h3>1. Importance of Weight Initialization</h3>
+        <p>In deep neural network optimization, weight initialization is crucial for controlling signal flow, preventing early training instability, and speeding up convergence. Arbitrary or ill-conditioned initialization induces two primary failure modes:</p>
+        <ul>
+            <li><strong>Vanishing Gradients:</strong> When weights are initialized too small ($W \ll 1$), activations shrink across successive forward layers, and backpropagated gradients decay to near zero, stopping early layers from updating.</li>
+            <li><strong>Exploding Gradients:</strong> When weights are initialized too large ($W \gg 1$), layer outputs and backward gradients grow exponentially with depth, causing numerical overflow and divergent oscillations.</li>
+        </ul>
+        <p>The goal is <strong>Variance Preservation</strong>: ensuring that the variance of activations and gradients remains approximately constant across layers:</p>
+        $$\mathrm{Var}(z^{[l]}) \approx \mathrm{Var}(z^{[l-1]}) \quad \text{and} \quad \mathrm{Var}\left(\frac{\partial \mathcal{L}}{\partial z^{[l]}}\right) \approx \mathrm{Var}\left(\frac{\partial \mathcal{L}}{\partial z^{[l+1]}}\right)$$
+
+        <h3>2. Initialization Techniques</h3>
+        
+        <h4>A. Zero Initialization</h4>
+        <p>Sets all weights $W_{ij} = 0$. This results in complete <em>network symmetry</em>; every neuron computes identical activations and receives identical gradients during backpropagation, failing to extract diverse features. Zero initialization should only be used for biases.</p>
+
+        <h4>B. Standard Random Initialization</h4>
+        <p>Samples weights from a fixed normal or uniform distribution (e.g., $W \sim \mathcal{N}(0, 0.01^2)$). While it breaks symmetry, it does not scale with the fan-in ($n_{in}$), causing vanishing or exploding signals in deeper networks ($L > 5$).</p>
+
+        <h4>C. Xavier / Glorot Initialization</h4>
+        <p>Designed for symmetric, zero-centered linear and quasi-linear activations (Tanh, Sigmoid, Softmax):</p>
+        $$\text{Normal: } W \sim \mathcal{N}\left(0, \frac{2}{n_{in} + n_{out}}\right) \qquad \text{Uniform: } W \sim \mathcal{U}\left(-\sqrt{\frac{6}{n_{in} + n_{out}}}, +\sqrt{\frac{6}{n_{in} + n_{out}}}\right)$$
+        <p><em>Limitation:</em> Fails with ReLU-like activations because discarding negative values halves the signal variance per layer.</p>
+
+        <h4>D. He / Kaiming Initialization</h4>
+        <p>Formulated specifically for rectified units (ReLU, Leaky ReLU, PReLU) by doubling the assigned variance to account for inactive negative regimes:</p>
+        $$\text{Normal: } W \sim \mathcal{N}\left(0, \frac{2}{n_{in}}\right) \qquad \text{Uniform: } W \sim \mathcal{U}\left(-\sqrt{\frac{6}{n_{in}}}, +\sqrt{\frac{6}{n_{in}}}\right)$$
+
+        <h4>E. LeCun Initialization</h4>
+        <p>Focuses on preserving variance in the forward pass assuming zero-centered inputs: $W \sim \mathcal{N}\left(0, \frac{1}{n_{in}}\right)$. When paired with SELU, it provides mathematical self-normalization.</p>
+
+        <h3>3. Comparative Summary</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Distribution / Variance</th>
+                    <th>Target Activation</th>
+                    <th>Key Strength</th>
+                    <th>Limitation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Zero</strong></td>
+                    <td>$W = 0$</td>
+                    <td>Biases Only</td>
+                    <td>Simple baseline</td>
+                    <td>Symmetry trap; neurons cannot specialize</td>
+                </tr>
+                <tr>
+                    <td><strong>Random Small</strong></td>
+                    <td>$\mathcal{N}(0, 0.01^2)$</td>
+                    <td>Shallow Linear Models</td>
+                    <td>Breaks symmetry</td>
+                    <td>Scalability failure in deep architectures</td>
+                </tr>
+                <tr>
+                    <td><strong>Xavier / Glorot</strong></td>
+                    <td>$\mathrm{Var} = \frac{2}{n_{in} + n_{out}}$</td>
+                    <td>Tanh, Sigmoid, Softmax</td>
+                    <td>Balances forward and backward passes</td>
+                    <td>Signal vanishes when paired with ReLU</td>
+                </tr>
+                <tr>
+                    <td><strong>He / Kaiming</strong></td>
+                    <td>$\mathrm{Var} = \frac{2}{n_{in}}$</td>
+                    <td>ReLU, Leaky ReLU, PReLU</td>
+                    <td>Maintains signal power in deep nets</td>
+                    <td>Incompatible with Sigmoid/Tanh</td>
+                </tr>
+                <tr>
+                    <td><strong>LeCun</strong></td>
+                    <td>$\mathrm{Var} = \frac{1}{n_{in}}$</td>
+                    <td>SELU, Tanh</td>
+                    <td>Self-normalizing dynamics</td>
+                    <td>Strictly paired with matching activations</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Arabic Explanation -->
+        <div class="arabic-section">
+            <h3>الشرح والتوضيح بالعربي (Task 0)</h3>
+            <ul>
+                <li><strong>أهمية تهيئة الأوزان:</strong> في الشبكات العميقة، الأوزان الكبيرة تؤدي إلى <em>انفجار التدرج (Exploding Gradients)</em> وتوقف التدريب، والأوزان الصغيرة جداً تؤدي إلى <em>تلاشي التدرج (Vanishing Gradients)</em> وانعدام التعلم. الهدف الأساسي هو الحفاظ على تباين الإشارة (Variance) ثابتاً في مساري الحساب الأمامي والخلفي.</li>
+                <li><strong>Zero Initialization:</strong> وضع الأوزان بصفر يجعل كل الخلايا تحسب وتتعلم نفس القيم بدون أي تمايز، لذلك تستخدم فقط للـ Biases.</li>
+                <li><strong>Random Initialization:</strong> اختيار قيم عشوائية صغيرة يكسر التماثل لكنه يفشل مع زيادة عمق الشبكة لأنه لا يراعي عدد المدخلات ($n_{in}$).</li>
+                <li><strong>Xavier / Glorot:</strong> مخصصة لدوال التنشيط المتماثلة مثل Tanh و Sigmoid، ولكنها تسبب تلاشي الإشارة مع عائلة ReLU.</li>
+                <li><strong>He / Kaiming:</strong> مصممة خصيصاً لـ ReLU ومشتقاتها؛ تعوض فقدان الإشارات السالبة عبر مضاعفة التباين لضمان استقرار الشبكات العميقة جداً.</li>
+                <li><strong>LeCun:</strong> الأساس الرياضي لشبكات التنظيم الذاتي عند استخدامها مع دالة SELU.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- TASK 1 -->
+    <section class="task-card">
+        <h2>Task 1: The ReLU Family of Activation Functions</h2>
+        
+        <h3>1. Standard ReLU</h3>
+        $$f(x) = \max(0, x), \quad f'(x) = \begin{cases} 1 & \text{if } x > 0 \\ 0 & \text{if } x < 0 \end{cases}$$
+        <p>ReLU resolves vanishing gradients for positive activations and avoids computationally intensive exponentials. However, it suffers from the <strong>Dying ReLU</strong> problem: neurons with negative inputs output zero and have zero gradient, causing irreversible deactivation.</p>
+
+        <h3>2. Variants of the ReLU Family</h3>
+        
+        <h4>A. Leaky ReLU</h4>
+        $$f(x) = \begin{cases} x & \text{if } x > 0 \\ \alpha x & \text{if } x \le 0 \end{cases} \quad (\text{typically } \alpha = 0.01)$$
+        <p>Introduces a fixed small slope $\alpha$ for negative values, allowing gradients to flow and eliminating dead neurons with minimal computation.</p>
+
+        <h4>B. Parametric ReLU (PReLU)</h4>
+        $$f(x) = \max(0, x) + a \min(0, x)$$
+        <p>Treats the negative slope $a$ as a learnable parameter optimized during backpropagation, dynamically tailoring the response per channel/layer.</p>
+
+        <h4>C. Randomized ReLU (RReLU)</h4>
+        <p>Samples negative slope values from a uniform distribution during training ($a \sim \mathcal{U}(l, u)$) and uses the expected mean during inference, acting as a built-in regularizer.</p>
+
+        <h4>D. Exponential Linear Unit (ELU)</h4>
+        $$f(x) = \begin{cases} x & \text{if } x > 0 \\ \alpha(e^x - 1) & \text{if } x \le 0 \end{cases}$$
+        <p>Provides smooth, non-zero negative outputs that push the mean activation closer to zero, accelerating gradient descent and improving noise robustness at the cost of exponential computations.</p>
+
+        <h4>E. Scaled Exponential Linear Unit (SELU)</h4>
+        $$f(x) = \lambda \begin{cases} x & \text{if } x > 0 \\ \alpha(e^x - 1) & \text{if } x \le 0 \end{cases} \quad (\lambda \approx 1.0507, \, \alpha \approx 1.6733)$$
+        <p>Induces self-normalizing properties in deep MLPs, automatically stabilizing mean and variance across layers without Batch Normalization.</p>
+
+        <h4>F. ReLU6</h4>
+        $$f(x) = \min(\max(0, x), 6)$$
+        <p>Clamps positive activations to a maximum of 6.0, which prevents activation values from overflowing in low-precision (INT8/FP16) embedded and mobile deployments (e.g., MobileNet).</p>
+
+        <h4>G. Gaussian Error Linear Unit (GELU)</h4>
+        $$f(x) = x \cdot \Phi(x) \approx 0.5x \left(1 + \tanh\left(\sqrt{\frac{2}{\pi}}\left(x + 0.044715 x^3\right)\right)\right)$$
+        <p>Gates inputs probabilistically based on their cumulative normal distribution value. It provides smooth non-monotonicity and is the standard activation for modern Transformer architectures (BERT, GPT, ViT).</p>
+
+        <h3>3. Comparison Matrix</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Activation</th>
+                    <th>Negative Regime Gradient</th>
+                    <th>Dead Neurons?</th>
+                    <th>Computational Cost</th>
+                    <th>Common Applications</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>ReLU</strong></td>
+                    <td>$0$</td>
+                    <td>Yes (High risk)</td>
+                    <td>Minimal</td>
+                    <td>General CNNs, Baseline MLPs</td>
+                </tr>
+                <tr>
+                    <td><strong>Leaky ReLU</strong></td>
+                    <td>$\alpha$ (fixed)</td>
+                    <td>No</td>
+                    <td>Minimal</td>
+                    <td>GAN discriminators, Deep Classifiers</td>
+                </tr>
+                <tr>
+                    <td><strong>PReLU</strong></td>
+                    <td>$a$ (learned)</td>
+                    <td>No</td>
+                    <td>Very Low</td>
+                    <td>Large-scale Computer Vision</td>
+                </tr>
+                <tr>
+                    <td><strong>ELU</strong></td>
+                    <td>$\alpha e^x$</td>
+                    <td>No</td>
+                    <td>Medium (Exponential)</td>
+                    <td>Noise-sensitive classifiers / Regressors</td>
+                </tr>
+                <tr>
+                    <td><strong>SELU</strong></td>
+                    <td>$\lambda \alpha e^x$</td>
+                    <td>No</td>
+                    <td>Medium (Exponential)</td>
+                    <td>Self-normalizing Deep Feedforward Nets</td>
+                </tr>
+                <tr>
+                    <td><strong>ReLU6</strong></td>
+                    <td>$0$ ($x < 0$ and $x > 6$)</td>
+                    <td>Yes</td>
+                    <td>Minimal</td>
+                    <td>MobileNet, Quantized Edge Models</td>
+                </tr>
+                <tr>
+                    <td><strong>GELU</strong></td>
+                    <td>Smooth non-monotonic</td>
+                    <td>No</td>
+                    <td>Higher (Tanh/Erf)</td>
+                    <td>Transformers (BERT, GPT, ViT)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Arabic Explanation -->
+        <div class="arabic-section">
+            <h3>الشرح والتوضيح بالعربي (Task 1)</h3>
+            <ul>
+                <li><strong>دالة ReLU:</strong> الأشهر بفضل سرعتها وحلها لمشكلة تلاشي التدرج للقيم الموجبة، ولكن يعيبها مشكلة موت الخلايا (Dying ReLU) للقيم السالبة.</li>
+                <li><strong>Leaky ReLU:</strong> تضيف ميلاً بسيطاً (مثل $0.01$) للمنطقة السالبة لمنع موت الخلايا.</li>
+                <li><strong>PReLU:</strong> تجعل الميل السالب معاملاً قابلاً للتعلم أثناء التدريب (Learnable Parameter).</li>
+                <li><strong>ELU:</strong> تستخدم دالة أسية للقيم السالبة لتقريب متوسط المخرجات من الصفر وتسريع التدريب.</li>
+                <li><strong>SELU:</strong> نسخة مطورة بثوابت دقيقة تمنح الشبكة ميزة التنظيم الذاتي (Self-Normalization) بدون الحاجة إلى Batch Normalization.</li>
+                <li><strong>ReLU6:</strong> تحد المخرجات بحد أقصى $6$ لتسهيل حسابات التكميم (Quantization) للأجهزة المحمولة والـ Embedded Systems.</li>
+                <li><strong>GELU:</strong> تعتمد على التوزيع الطبيعي وتتميز بالنعومة وعدم وجود انكسار حاد، وهي الدالة القياسية في نماذج الـ Transformers الحديثة.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- TASK 2 -->
+    <section class="task-card">
+        <h2>Task 2: Toxic Content Challenge (PyTorch Implementation)</h2>
+        <p>A multi-label classification pipeline built with an Embedding + Bidirectional LSTM architecture, weighted Binary Cross-Entropy loss for handling class imbalance, and per-label evaluation metrics (Precision, Recall, F1, ROC-AUC).</p>
+        
+        <pre><code>import re
+from collections import Counter
+import numpy as np
+import pandas as pd
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, Dataset
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score
+
+# 1. Hyperparameters & Labels
+LABEL_COLS = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
+MAX_VOCAB_SIZE = 25000
+MAX_LEN = 150
+EMBED_DIM = 128
+HIDDEN_DIM = 128
+BATCH_SIZE = 64
+EPOCHS = 4
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# 2. Text Preprocessing
+def clean_text(text):
+    text = str(text).lower()
+    text = re.sub(r"https?://\S+|www\.\S+", "", text)
+    text = re.sub(r"[^a-zA-Z\s]", "", text)
+    return text.strip().split()
+
+def build_vocab(tokenized_texts, max_vocab_size=MAX_VOCAB_SIZE):
+    counter = Counter()
+    for tokens in tokenized_texts:
+        counter.update(tokens)
+    vocab = {"&lt;PAD&gt;": 0, "&lt;UNK&gt;": 1}
+    for word, _ in counter.most_common(max_vocab_size - 2):
+        vocab[word] = len(vocab)
+    return vocab
+
+def encode_and_pad(tokens, vocab, max_len=MAX_LEN):
+    ids = [vocab.get(t, vocab["&lt;UNK&gt;"]) for t in tokens[:max_len]]
+    if len(ids) &lt; max_len:
+        ids += [vocab["&lt;PAD&gt;"]] * (max_len - len(ids))
+    return ids
+
+# 3. Dataset Setup
+class JigsawDataset(Dataset):
+    def __init__(self, sequences, labels):
+        self.sequences = torch.tensor(sequences, dtype=torch.long)
+        self.labels = torch.tensor(labels, dtype=torch.float32)
+
+    def __len__(self):
+        return len(self.sequences)
+
+    def __getitem__(self, idx):
+        return self.sequences[idx], self.labels[idx]
+
+# 4. Multi-Label LSTM Model Architecture
+class ToxicLSTM(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_dim, num_classes=6):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
+        self.lstm = nn.LSTM(
+            embed_dim,
+            hidden_dim,
+            batch_first=True,
+            bidirectional=True,
+            num_layers=2,
+            dropout=0.2
+        )
+        self.fc = nn.Sequential(
+            nn.Linear(hidden_dim * 2, 64),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(64, num_classes)
+        )
+
+    def forward(self, x):
+        embedded = self.embedding(x)
+        out, _ = self.lstm(embedded)
+        pooled = torch.max(out, dim=1)[0]
+        logits = self.fc(pooled)
+        return logits
+
+# 5. Training and Evaluation Pipeline
+def run_pipeline(df):
+    df['tokens'] = df['comment_text'].apply(clean_text)
+    vocab = build_vocab(df['tokens'])
+    sequences = [encode_and_pad(tok, vocab) for tok in df['tokens']]
+    labels = df[LABEL_COLS].values
+
+    # Train / Validation / Test Split (70 / 15 / 15)
+    X_train, X_temp, y_train, y_temp = train_test_split(sequences, labels, test_size=0.3, random_state=42)
+    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
+
+    train_loader = DataLoader(JigsawDataset(X_train, y_train), batch_size=BATCH_SIZE, shuffle=True)
+    val_loader = DataLoader(JigsawDataset(X_val, y_val), batch_size=BATCH_SIZE)
+    test_loader = DataLoader(JigsawDataset(X_test, y_test), batch_size=BATCH_SIZE)
+
+    # Calculate Positive Class Weights for Imbalance
+    pos_counts = np.sum(y_train, axis=0)
+    neg_counts = len(y_train) - pos_counts
+    pos_weights = torch.tensor(neg_counts / np.maximum(pos_counts, 1), dtype=torch.float32).to(DEVICE)
+
+    model = ToxicLSTM(len(vocab), EMBED_DIM, HIDDEN_DIM).to(DEVICE)
+    criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weights)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+
+    # Training
+    for epoch in range(EPOCHS):
+        model.train()
+        total_loss = 0
+        for x_batch, y_batch in train_loader:
+            x_batch, y_batch = x_batch.to(DEVICE), y_batch.to(DEVICE)
+            optimizer.zero_grad()
+            logits = model(x_batch)
+            loss = criterion(logits, y_batch)
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
+        print(f"Epoch {epoch+1}/{EPOCHS} | Train Loss: {total_loss/len(train_loader):.4f}")
+
+    # Evaluation
+    model.eval()
+    all_preds, all_targets = [], []
+    with torch.no_grad():
+        for x_batch, y_batch in test_loader:
+            x_batch = x_batch.to(DEVICE)
+            probs = torch.sigmoid(model(x_batch)).cpu().numpy()
+            all_preds.append(probs)
+            all_targets.append(y_batch.numpy())
+
+    preds = np.vstack(all_preds)
+    targets = np.vstack(all_targets)
+    binary_preds = (preds >= 0.5).astype(int)
+
+    print("\n--- Model Evaluation Per Category ---")
+    for i, col in enumerate(LABEL_COLS):
+        prec = precision_score(targets[:, i], binary_preds[:, i], zero_division=0)
+        rec = recall_score(targets[:, i], binary_preds[:, i], zero_division=0)
+        f1 = f1_score(targets[:, i], binary_preds[:, i], zero_division=0)
+        auc = roc_auc_score(targets[:, i], preds[:, i])
+        print(f"{col:15s} | Prec: {prec:.3f} | Recall: {rec:.3f} | F1: {f1:.3f} | ROC-AUC: {auc:.3f}")
+</code></pre>
+    </section>
+</div>
+
+</body>
+</html>
