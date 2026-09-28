@@ -1,0 +1,17 @@
+llm:
+  provider: "openai"              # الخيارات: openai, ollama, huggingface
+  model_name: "gpt-4o-mini"
+  temperature: 0.0
+
+embedding:
+  provider: "openai"              # الخيارات: openai, huggingface
+  model_name: "text-embedding-3-large"
+
+vector_db:
+  provider: "chroma"
+  persist_directory: "./data/chroma_db"
+
+retrieval:
+  top_k: 4
+  dense_weight: 0.5
+  sparse_weight: 0.5

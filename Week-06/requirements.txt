@@ -1,0 +1,12 @@
+langchain>=0.2.14
+langchain-core>=0.2.35
+langchain-community>=0.2.12
+langchain-openai>=0.1.22
+langchain-huggingface>=0.0.3
+rank-bm25>=0.2.2
+chromadb>=0.5.0
+pypdf>=4.2.0
+pydantic>=2.7.0
+pydantic-settings>=2.2.0
+pyyaml>=6.0.1
+python-dotenv>=1.0.1
