@@ -39,4 +39,4 @@ constitutional_rag_project/
 └── README.md
 
 
-![alt text](image.png)
+![Example](image.png)
