@@ -37,3 +37,10 @@ constitutional_rag_project/
 ├── requirements.txt             # متطلبات المشروع البرمجية
 ├── .env.example                 # نموذج مفاتيح الربط
 └── README.md
+```  
+
+---
+
+## 🖼️ مثال توضيحي (Example)
+
+![Example](image.png) 
